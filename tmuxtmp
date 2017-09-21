@@ -1,0 +1,2 @@
+#!/bin/bash
+tmux -d -t tmp || tmux new-session -s tmp
