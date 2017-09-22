@@ -10,11 +10,19 @@ else
     fi
 fi
 
-revlist="$(git rev-list --reverse "$spec")"
-for rev in $revlist; do
-    clear;
-    git show -s "$rev";
-    echo "--------------------------------------------------------------------------------"
-    git difftool "$rev~" "$rev"
-done
+# Obtain revlist to consider at all
+revlist="$(git log --reverse --format='%H - %s' "$spec")";
 
+# Prompt for commit and inspect it in a loop until the user wants to exit
+commit="-";
+while true; do
+    commit=$(echo "$revlist" | \
+        fzf --reverse --header "Select commit to inspect. Last was $commit" | \
+        awk '{print $1}');
+    if [[ ! "$commit" ]]; then
+        break;
+    fi
+    clear;
+    inspect_commit.sh "$commit";
+done;
+exit 0;
