@@ -24,5 +24,5 @@ while true; do
     if [[ ! "$sel" ]]; then
         break;
     fi
-    git difftool -y "$commit~" "$commit" -- "$sel"
+    git difftool -y "$commit~" "$commit" -- ":/:$sel"
 done
