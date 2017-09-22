@@ -1,2 +1,2 @@
 #!/bin/bash
-tmux -d -t tmp || tmux new-session -s tmp
+tmux attach -d -t tmp || tmux new-session -s tmp
