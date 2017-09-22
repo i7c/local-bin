@@ -1,20 +1,27 @@
 #!/bin/bash
 
-if [[ "$2" ]]; then
-    spec="$1..$2";
+if [[ "$1" == "_" ]]; then
+    shift;
+    revlist="$(git log --color --graph --pretty="%H %s (%D)" "$@" -1024 | \
+        fzf --reverse -m --ansi | \
+        sed -r 's,^[| *]*([a-z0-9]* .*)$,\1,' | grep -P '\S')"
+elif [[ "$1" ]]; then
+    revlist="$(git log --reverse --format='%H - %s' "$@")";
 else
-    if [[ "$1" ]]; then
-        spec="$1";
-    else
-        spec="origin/master..HEAD";
-    fi
+    revlist="$(git log --reverse --format='%H - %s' "origin/master..HEAD")";
 fi
+# Obtain revlist to consider at all
 
-revlist="$(git rev-list --reverse "$spec")"
-for rev in $revlist; do
+# Prompt for commit and inspect it in a loop until the user wants to exit
+commit="-";
+while true; do
+    commit=$(echo "$revlist" | \
+        fzf --reverse --header "Select commit to inspect. Last was $commit" | \
+        awk '{print $1}');
+    if [[ ! "$commit" ]]; then
+        break;
+    fi
     clear;
-    git show -s "$rev";
-    echo "--------------------------------------------------------------------------------"
-    git difftool "$rev~" "$rev"
-done
-
+    inspect_commit.sh "$commit";
+done;
+exit 0;
