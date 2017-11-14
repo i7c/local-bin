@@ -1,0 +1,5 @@
+#!/bin/bash
+fpat="$1";
+spat="$2";
+shift 2;
+find . -iname "$fpat" -exec ag --color "$@" "$spat" "{}" +
