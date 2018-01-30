@@ -1,0 +1,9 @@
+#!/bin/perl
+use strict;
+use warnings;
+
+use Net::DBus;
+my $bus = Net::DBus->session;
+my $spotify_service = $bus->get_service("org.mpris.MediaPlayer2.spotify");
+my $player = $spotify_service->get_object("/org/mpris/MediaPlayer2", "org.mpris.MediaPlayer2.Player");
+$player->Pause();
