@@ -1,0 +1,20 @@
+#!/usr/bin/perl
+use JSON::PP;
+use Term::Menus;
+
+sub account_select {
+    my ($accs) = @_;
+
+    my @acc_names = map {
+        $_->{name}
+    } $accs->@*;
+
+    (&pick(\@acc_names, "Pick a subscription"))[0];
+}
+
+my $output = `az account list`;
+my $accs = decode_json($output);
+my $acc = account_select($accs);
+
+print `az account set --subscription $acc`;
+print `az account show`;
