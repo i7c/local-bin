@@ -1,6 +1,5 @@
 #!/usr/bin/perl
 use JSON::PP;
-use Term::Menus;
 
 sub account_select {
     my ($accs) = @_;
@@ -9,7 +8,12 @@ sub account_select {
         $_->{name}
     } $accs->@*;
 
-    (&pick(\@acc_names, "Pick a subscription"))[0];
+    for (my $i = 0; $i < scalar @acc_names; $i++) {
+        printf "%2d %s\n", $i, $acc_names[$i];
+    }
+    print "Choose wisely: ";
+    my $selection = <STDIN>;
+    @acc_names[int($selection)];
 }
 
 my $output = `az account list`;
